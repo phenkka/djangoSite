@@ -38,3 +38,18 @@ class DemandStatistics(models.Model):
     class Meta:
         verbose_name = "Востребованность"
         verbose_name_plural = "Востребованность"
+
+
+class GeoStatistics(models.Model):
+    title = models.CharField(max_length=200, default='География iOS-разработчика')
+    description = models.TextField(blank=True)
+
+    geo_ios_city_salary = models.ImageField(upload_to='charts/', verbose_name="Уровень зарплат по городам для выбранной профессии")
+    geo_ios_city_vacancy_share = models.ImageField(upload_to='charts/', verbose_name="Доля вакансий по городам для выбранной профессии")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "География"
+        verbose_name_plural = "География"

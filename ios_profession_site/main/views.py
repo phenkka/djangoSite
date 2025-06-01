@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import GeneralStatistics, MainPageInfo, DemandStatistics
+from .models import GeneralStatistics, MainPageInfo, DemandStatistics, GeoStatistics
 
 
 def home(request):
@@ -15,7 +15,8 @@ def demand(request):
     return render(request, 'main/demand.html', {'stats': stats})
 
 def geo(request):
-    return render(request, 'main/geo.html')
+    stats = GeoStatistics.objects.first()
+    return render(request, 'main/geo.html', {'stats': stats})
 
 def skills(request):
     return render(request, 'main/skills.html')
