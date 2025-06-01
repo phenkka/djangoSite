@@ -1,0 +1,6 @@
+{% extends 'main/base.html' %}
+{% block content %}
+  <h2>{{ info.profession_name }}</h2>
+  <p>{{ info.description|linebreaks }}</p>
+  <img src="{{ info.image.url }}" alt="Изображение профессии" style="max-width: 100%; height: auto;">
+{% endblock %}
