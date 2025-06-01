@@ -23,3 +23,18 @@ class GeneralStatistics(models.Model):
     class Meta:
         verbose_name = "Общая статистика"
         verbose_name_plural = "Общая статистика"
+
+
+class DemandStatistics(models.Model):
+    title = models.CharField(max_length=200, default='Востребованность iOS-разработчика')
+    description = models.TextField(blank=True)
+
+    ios_salary_level_trend = models.ImageField(upload_to='charts/', verbose_name="Динамика уровня зарплат по годам для выбранной профессии")
+    ios_vacancies_level_trend = models.ImageField(upload_to='charts/', verbose_name="Динамика количества вакансий по годам для выбранной профессии")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Востребованность"
+        verbose_name_plural = "Востребованность"
