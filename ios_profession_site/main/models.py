@@ -11,10 +11,11 @@ class MainPageInfo(models.Model):
 class GeneralStatistics(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     description = models.TextField(verbose_name="Описание (опционально)", blank=True)
-    salary_graph = models.ImageField(upload_to='charts/', verbose_name="График зарплат по годам")
-    vacancy_graph = models.ImageField(upload_to='charts/', verbose_name="График количества вакансий по годам")
-    salary_table = models.TextField(verbose_name="HTML-таблица зарплат по годам")
-    vacancy_table = models.TextField(verbose_name="HTML-таблица количества вакансий по годам")
+    salary_dynamics = models.ImageField(upload_to='charts/', verbose_name="Динамика уровня зарплат по годам", blank=True, null=True)
+    vacancies_dynamics = models.ImageField(upload_to='charts/', verbose_name="Динамика количества вакансий по годам", blank=True, null=True)
+    salary_by_city = models.ImageField(upload_to='charts/', verbose_name="Уровень зарплат по городам", blank=True, null=True)
+    vacancies_share_by_city = models.ImageField(upload_to='charts/', verbose_name="Доля вакансий по городам", blank=True, null=True)
+    top_skills = models.ImageField(upload_to='charts/', verbose_name="ТОП-20 навыков по годам", blank=True, null=True)
 
     def __str__(self):
         return self.title

@@ -4,15 +4,14 @@
   <h1>{{ stats.title }}</h1>
   <p>{{ stats.description }}</p>
 
-  <h2>График зарплат</h2>
-  <img src="{{ stats.salary_graph.url }}" alt="График зарплат">
+  <img src="{{ stats.salary_dynamics.url }}" alt="График">
 
-  <h2>График вакансий</h2>
-  <img src="{{ stats.vacancy_graph.url }}" alt="График вакансий">
+  <img src="{{ stats.vacancies_dynamics.url }}" alt="График">
 
-  <h2>Таблица зарплат</h2>
-  {{ stats.salary_table_html|safe }}
+  <img src="{{ stats.salary_by_city.url }}" alt="График">
 
-  <h2>Таблица вакансий</h2>
-  {{ stats.vacancy_table_html|safe }}
+  <img src="{{ stats.vacancies_share_by_city.url }}" alt="График">
+
+  <img src="{{ stats.top_skills.url }}" alt="График">
+
 {% endblock %}

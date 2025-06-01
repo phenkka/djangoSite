@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import GeneralStatistics, MainPageInfo
 
+
 def home(request):
     info = MainPageInfo.objects.first()
     return render(request, 'main/home.html', {'info': info})
