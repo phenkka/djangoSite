@@ -53,3 +53,18 @@ class GeoStatistics(models.Model):
     class Meta:
         verbose_name = "География"
         verbose_name_plural = "География"
+
+
+
+class SkillsStatistics(models.Model):
+    title = models.CharField(max_length=200, default='ТОП-20 навыков для iOS-разработчика')
+    description = models.TextField(blank=True)
+
+    skills_top_ios_trend = models.ImageField(upload_to='charts/', verbose_name="ТОП-20 навыков по годам для выбранной профессии")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Навыки"
+        verbose_name_plural = "Навыки"

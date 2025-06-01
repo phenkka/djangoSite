@@ -1,0 +1,9 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <h1>{{ stats.title }}</h1>
+  <p>{{ stats.description }}</p>
+
+  <img src="{{ stats.skills_top_ios_trend.url }}" alt="График динамики зарплат">
+
+{% endblock %}
