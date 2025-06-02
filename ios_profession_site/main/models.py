@@ -1,9 +1,35 @@
 from django.db import models
 
 class MainPageInfo(models.Model):
-    profession_name = models.CharField(max_length=100, default='iOS-разработчик')
-    description = models.TextField()
-    image = models.ImageField(upload_to='main_images/')
+    profession_name = models.CharField()
+    greeting_img = models.ImageField(upload_to='main_images/')
+    greeting_description = models.TextField()
+
+    header_1 = models.CharField(blank=True, null=True)
+    under_header_1 = models.CharField(blank=True, null=True)
+    under_1_1 = models.CharField(blank=True, null=True)
+    under_1_2 = models.CharField(blank=True, null=True)
+    under_1_3 = models.CharField(blank=True, null=True)
+    under_1_4 = models.CharField(blank=True, null=True)
+
+    under_header_2 = models.CharField(blank=True, null=True)
+    under_2_1 = models.CharField(blank=True, null=True)
+    under_2_2 = models.CharField(blank=True, null=True)
+    under_2_3 = models.CharField(blank=True, null=True)
+
+    under_header_3 = models.CharField(blank=True, null=True)
+    under_3_1 = models.CharField(blank=True, null=True)
+    under_3_2 = models.CharField(blank=True, null=True)
+    under_3_3 = models.CharField(blank=True, null=True)
+
+    under_header_4 = models.CharField(blank=True, null=True)
+    under_4_1 = models.CharField(blank=True, null=True)
+    under_4_2 = models.CharField(blank=True, null=True)
+    under_4_3 = models.CharField(blank=True, null=True)
+
+    additional_info_name = models.CharField(blank=True, null=True)
+    additional_info = models.TextField(blank=True, null=True)
+    additional_img = models.ImageField(upload_to='main_images/')
 
     def __str__(self):
         return self.profession_name

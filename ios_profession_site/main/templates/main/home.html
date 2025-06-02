@@ -1,6 +1,108 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block content %}
-  <h2>{{ info.profession_name }}</h2>
-  <p>{{ info.description|linebreaks }}</p>
-  <img src="{{ info.image.url }}" alt="Изображение профессии" style="max-width: 100%; height: auto;">
+<head>
+  <link rel="stylesheet" href="{% static 'css/style_home.css' %}">
+</head>
+  <style>
+    .header-bg {
+      background-image: url('{{ info.greeting_img.url }}');
+      background-repeat: no-repeat;
+      background-position: top center;
+      background-size: 100% auto;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10% 30%;
+      text-align: center;
+    }
+
+    .additional-info {
+      background-image: url('{{ info.additional_img.url }}');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      max-width: 70%;
+      margin: 50px auto 80px;
+      font-size: 18px;
+      line-height: 1.6;
+      color: white;
+      text-align: center;
+      padding: 40px 30px;
+  }
+  </style>
+
+  <div class="header-bg">
+    <div class="header-overlay">
+      <h2>{{ info.profession_name }}</h2>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="header-answer">
+      <p>{{ info.greeting_description|linebreaks }}</p>
+    </div>
+  </div>
+
+  <div class="carousel-container">
+    <h1>{{ info.header_1 }}</h1>
+    <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>
+    <div class="carousel-wrapper" id="carouselWrapper">
+
+      <div class="carousel-slide">
+        <h3>{{ info.under_header_1 }}</h3>
+        <ol>
+          <li>{{ info.under_1_1 }}</li>
+          <li>{{ info.under_1_2 }}</li>
+          <li>{{ info.under_1_3 }}</li>
+          <li>{{ info.under_1_4 }}</li>
+        </ol>
+      </div>
+
+      <div class="carousel-slide">
+        <h3>{{ info.under_header_2 }}</h3>
+        <ol>
+          <li>{{ info.under_2_1 }}</li>
+          <li>{{ info.under_2_2 }}</li>
+          <li>{{ info.under_2_3 }}</li>
+        </ol>
+      </div>
+
+      <div class="carousel-slide">
+        <h3>{{ info.under_header_3 }}</h3>
+        <ol>
+          <li>{{ info.under_3_1 }}</li>
+          <li>{{ info.under_3_2 }}</li>
+          <li>{{ info.under_3_3 }}</li>
+        </ol>
+      </div>
+
+      <div class="carousel-slide">
+        <h3>{{ info.under_header_4 }}</h3>
+        <ol>
+          <li>{{ info.under_4_1 }}</li>
+          <li>{{ info.under_4_2 }}</li>
+          <li>{{ info.under_4_3 }}</li>
+        </ol>
+      </div>
+
+    </div>
+    <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>
+  </div>
+
+  <div class="background-info">
+    <div class="additional-info">
+      <h1>{{ info.additional_info_name }}</h1>
+      <p>{{ info.additional_info|linebreaks }}</p>
+    </div>
+  </div>
+  {% block scripts %}
+    <script src="{% static 'js/carousel.js' %}"></script>
+  {% endblock %}
 {% endblock %}

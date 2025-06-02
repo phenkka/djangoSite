@@ -27,6 +27,7 @@ body {
   transition: width 0.3s ease;
   overflow: hidden;
   position: fixed;
+  z-index: 10;
 }
 
 .sidebar:hover {
@@ -78,15 +79,15 @@ body {
   flex-direction: column;
   min-height: 100vh;
   margin-left: 60px;
-  padding: 20px;
-  width: calc(100% - 60px);
+  /* padding: 20px; */
+  width: 100%;
   flex: 1;
   box-sizing: border-box;
+  transition: filter 0.3s ease;
 }
 
 .sidebar:hover ~ .main-content {
-  margin-left: 220px;
-  width: calc(100% - 220px);
+  filter: blur(4px);
 }
 
 .site-footer {
