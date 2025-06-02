@@ -1,158 +1,187 @@
 import os
 import csv
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 from datetime import datetime
-from collections import defaultdict
-import matplotlib.ticker as ticker
+from collections import defaultdict, Counter
 from matplotlib import rcParams
-import numpy as np
+import requests
+import xml.etree.ElementTree as ET
 
-# Настройки для matplotlib
 rcParams['font.family'] = 'Arial'
-plt.rcParams['axes.facecolor'] = 'white'
-plt.rcParams['figure.facecolor'] = 'white'
+plt.style.use('seaborn-v0_8')
 
-# Путь к папке для результатов (внутри data/)
-output_folder = os.path.join('data', 'stats')
+output_folder = os.path.join('data', 'statistics')
 os.makedirs(output_folder, exist_ok=True)
 
+CURRENCIES = ['USD', 'EUR', 'RUB', 'RUR', 'KZT', 'UAH', 'BYR', 'BYN', 'AZN', 'GBP']
 
-# Функция для конвертации зарплаты в рубли
-def convert_salary(row):
-    if pd.isna(row['salary_from']) or pd.isna(row['salary_to']) or row['salary_currency'] == '':
+course_cache = {}
+
+def get_exchange_rate(date_str, currency):
+    date_obj = datetime.strptime(date_str[:10], '%Y-%m-%d')
+    first_day = date_obj.replace(day=1)
+    date_key = first_day.strftime('%Y-%m-%d')
+    if currency in ['RUB', 'RUR']:
+        return 1.0
+    if (date_key, currency) in course_cache:
+        return course_cache[(date_key, currency)]
+    url = f"https://www.cbr.ru/scripts/XML_daily.asp?date_req={first_day.strftime('%d/%m/%Y')}"
+    try:
+        response = requests.get(url, timeout=5)
+        response.encoding = 'windows-1251'
+        root = ET.fromstring(response.text)
+        rate = None
+        for valute in root.findall('Valute'):
+            code = valute.find('CharCode').text
+            if code == currency:
+                nominal = int(valute.find('Nominal').text)
+                value_str = valute.find('Value').text
+                value_float = float(value_str.replace(',', '.'))
+                rate = value_float / nominal
+                break
+        course_cache[(date_key, currency)] = rate
+        return rate
+    except Exception:
+        course_cache[(date_key, currency)] = None
         return None
 
-    salary_from = float(row['salary_from']) if row['salary_from'] else 0
-    salary_to = float(row['salary_to']) if row['salary_to'] else 0
-    currency = row['salary_currency']
+def parse_salary(row):
+    try:
+        salary_from = float(row['salary_from']) if row['salary_from'] else 0
+    except:
+        salary_from = 0
+    try:
+        salary_to = float(row['salary_to']) if row['salary_to'] else 0
+    except:
+        salary_to = 0
+    if salary_from == 0 and salary_to == 0:
+        return None
+    if salary_to:
+        salary = (salary_from + salary_to) / 2
+    else:
+        salary = salary_from
+    return salary
 
-    # Среднее значение вилки зарплат
-    salary = (salary_from + salary_to) / 2 if salary_to != 0 else salary_from
-
-    # Курсы валют (примерные, нужно использовать актуальные курсы ЦБ)
-    exchange_rates = {
-        'USD': 90.0,
-        'EUR': 100.0,
-        'KZT': 0.2,
-        'RUR': 1,
-        'RUB': 1
-    }
-
-    # Конвертируем в рубли, если валюта известна
-    if currency in exchange_rates:
-        salary_rub = salary * exchange_rates[currency]
-        # Игнорируем зарплаты > 10 млн рублей
-        return salary_rub if salary_rub <= 10000000 else None
-    return None
-
-
-# Чтение данных из CSV
-def read_csv_data(file_path):
-    data = []
-    with open(file_path, mode='r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
+def process_data(file_path):
+    salaries_by_year = defaultdict(list)
+    vacancies_by_year = defaultdict(int)
+    salaries_by_city = defaultdict(list)
+    vacancies_by_city = defaultdict(int)
+    skills_by_year = defaultdict(list)
+    with open(file_path, encoding='utf-8') as f:
+        reader = csv.DictReader(f)
         for row in reader:
-            # Преобразуем дату в год
+            date_str = row['published_at']
+            city = row['area_name'] if row['area_name'] else 'Не указан'
+            currency = row['salary_currency'] if row['salary_currency'] else 'RUB'
             try:
-                date = datetime.strptime(row['published_at'], '%Y-%m-%dT%H:%M:%S%z')
-                year = date.year
-            except:
-                year = None
+                date_obj = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S%z')
+                year = date_obj.year
+            except Exception:
+                continue
+            vacancies_by_year[year] += 1
+            vacancies_by_city[city] += 1
+            salary = parse_salary(row)
+            if salary is not None:
+                rate = get_exchange_rate(date_str, currency)
+                if rate is None:
+                    continue
+                salary_rub = salary * rate
+                if salary_rub <= 10_000_000:
+                    salaries_by_year[year].append(salary_rub)
+                    salaries_by_city[city].append(salary_rub)
+            key_skills = row['key_skills'].strip() if row['key_skills'] else ''
+            if key_skills:
+                skills = [s.strip() for s in key_skills.split('\n') if s.strip()]
+                skills_by_year[year].extend(skills)
 
-            # Конвертируем зарплату
-            salary_rub = convert_salary(row)
+    salary_trend_data = []
+    for y in sorted(salaries_by_year.keys()):
+        avg_salary = sum(salaries_by_year[y]) / len(salaries_by_year[y]) if salaries_by_year[y] else 0
+        salary_trend_data.append({'year': y, 'avg_salary': avg_salary})
+    salary_trend_df = pd.DataFrame(salary_trend_data)
 
-            # Получаем навыки
-            skills = row['key_skills'].split('\n') if row['key_skills'] else []
+    vacancies_year_data = [{'year': y, 'count': vacancies_by_year[y]} for y in sorted(vacancies_by_year.keys())]
+    vacancies_year_df = pd.DataFrame(vacancies_year_data)
 
-            data.append({
-                'year': year,
-                'salary_rub': salary_rub,
-                'area_name': row['area_name'],
-                'skills': skills
-            })
-    return pd.DataFrame(data)
+    salary_city_data = []
+    for c in salaries_by_city.keys():
+        if len(salaries_by_city[c]) > 0:
+            avg_salary = sum(salaries_by_city[c]) / len(salaries_by_city[c])
+            salary_city_data.append({'city': c, 'avg_salary': avg_salary})
+    salary_city_df = pd.DataFrame(salary_city_data).sort_values(by='avg_salary', ascending=False)
 
+    total_vacancies = sum(vacancies_by_city.values())
+    vacancies_city_data = [{'city': c, 'vacancy_share': vacancies_by_city[c]/total_vacancies} for c in vacancies_by_city.keys()]
+    vacancies_city_df = pd.DataFrame(vacancies_city_data).sort_values(by='vacancy_share', ascending=False)
 
-# Загрузка данных
-df = read_csv_data('data/vacancies_2024.csv')
+    skill_table_data = []
+    for y in sorted(skills_by_year.keys()):
+        counter = Counter(skills_by_year[y])
+        top_20 = counter.most_common(20)
+        for skill, count in top_20:
+            skill_table_data.append({'year': y, 'skill': skill, 'count': count})
+    skills_df = pd.DataFrame(skill_table_data)
+    skills_df = skills_df.sort_values(['year', 'count'], ascending=[True, False])
 
-# Фильтрация данных
-df = df[df['salary_rub'].notna() & df['year'].notna()]
+    salary_trend_df.to_csv(os.path.join(output_folder, 'salary_dynamics.csv'), index=False)
+    vacancies_year_df.to_csv(os.path.join(output_folder, 'vacancies_dynamics.csv'), index=False)
+    salary_city_df.to_csv(os.path.join(output_folder, 'salary_by_city.csv'), index=False)
+    vacancies_city_df.to_csv(os.path.join(output_folder, 'vacancies_share_by_city.csv'), index=False)
+    skills_df.to_csv(os.path.join(output_folder, 'top_skills.csv'), index=False)
 
-# 1. Динамика уровня зарплат по годам
-salary_by_year = df.groupby('year')['salary_rub'].mean().reset_index()
+    plt.figure(figsize=(12,6))
+    plt.plot(salary_trend_df['year'], salary_trend_df['avg_salary'], marker='o', linewidth=2)
+    plt.title('Динамика уровня зарплат по годам', fontsize=14)
+    plt.xlabel('Год', fontsize=12)
+    plt.ylabel('Средняя зарплата, руб.', fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.savefig(os.path.join(output_folder, 'salary_dynamics.png'), dpi=300, bbox_inches='tight')
+    plt.close()
 
-plt.figure(figsize=(10, 6))
-plt.plot(salary_by_year['year'], salary_by_year['salary_rub'], marker='o')
-plt.title('Динамика уровня зарплат по годам')
-plt.xlabel('Год')
-plt.ylabel('Средняя зарплата, руб')
-plt.grid(True)
-plt.savefig(os.path.join(output_folder, 'salary_dynamics.png'))
-plt.close()
+    plt.figure(figsize=(12,6))
+    plt.bar(vacancies_year_df['year'], vacancies_year_df['count'], color='orange', alpha=0.7)
+    plt.title('Динамика количества вакансий по годам', fontsize=14)
+    plt.xlabel('Год', fontsize=12)
+    plt.ylabel('Количество вакансий', fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.savefig(os.path.join(output_folder, 'vacancies_dynamics.png'), dpi=300, bbox_inches='tight')
+    plt.close()
 
-# 2. Динамика количества вакансий по годам
-vacancies_by_year = df['year'].value_counts().sort_index().reset_index()
-vacancies_by_year.columns = ['year', 'count']
+    top_20_cities_salary = salary_city_df.head(20)
+    plt.figure(figsize=(14,8))
+    plt.barh(top_20_cities_salary['city'][::-1], top_20_cities_salary['avg_salary'][::-1], color='green', alpha=0.7)
+    plt.title('Уровень зарплат по городам (топ-20)', fontsize=14)
+    plt.xlabel('Средняя зарплата, руб.', fontsize=12)
+    plt.ylabel('Город', fontsize=12)
+    plt.grid(True, axis='x', alpha=0.3)
+    plt.savefig(os.path.join(output_folder, 'salary_by_city.png'), dpi=300, bbox_inches='tight')
+    plt.close()
 
-plt.figure(figsize=(10, 6))
-plt.bar(vacancies_by_year['year'], vacancies_by_year['count'])
-plt.title('Динамика количества вакансий по годам')
-plt.xlabel('Год')
-plt.ylabel('Количество вакансий')
-plt.grid(True)
-plt.savefig(os.path.join(output_folder, 'vacancies_dynamics.png'))
-plt.close()
+    top_20_cities_vac = vacancies_city_df.head(20)
+    plt.figure(figsize=(14,8))
+    plt.barh(top_20_cities_vac['city'][::-1], top_20_cities_vac['vacancy_share'][::-1], color='purple', alpha=0.7)
+    plt.title('Доля вакансий по городам (топ-20)', fontsize=14)
+    plt.xlabel('Доля вакансий', fontsize=12)
+    plt.ylabel('Город', fontsize=12)
+    plt.grid(True, axis='x', alpha=0.3)
+    plt.savefig(os.path.join(output_folder, 'vacancies_share_by_city.png'), dpi=300, bbox_inches='tight')
+    plt.close()
 
-# 3. Уровень зарплат по городам (топ 20)
-city_salary = df.groupby('area_name')['salary_rub'].mean().sort_values(ascending=False).head(20).reset_index()
+    if not skills_df.empty:
+        top_skills = skills_df.groupby('skill')['count'].sum().sort_values(ascending=False).head(10).index.tolist()
+        pivot_df = skills_df[skills_df['skill'].isin(top_skills)].pivot(index='year', columns='skill', values='count').fillna(0)
+        plt.figure(figsize=(14, 8))
+        for skill in pivot_df.columns:
+            plt.plot(pivot_df.index, pivot_df[skill], marker='o', label=skill)
+        plt.title('Динамика популярности ТОП-10 навыков', fontsize=14)
+        plt.xlabel('Год', fontsize=12)
+        plt.ylabel('Частота упоминаний', fontsize=12)
+        plt.legend(title='Навык', bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_folder, 'top_skills.png'), dpi=300)
+        plt.close()
 
-plt.figure(figsize=(12, 8))
-plt.barh(city_salary['area_name'], city_salary['salary_rub'])
-plt.title('Уровень зарплат по городам (Топ 20)')
-plt.xlabel('Средняя зарплата, руб')
-plt.ylabel('Город')
-plt.gca().invert_yaxis()
-plt.grid(True)
-plt.savefig(os.path.join(output_folder, 'salary_by_city.png'))
-plt.close()
-
-# 4. Доля вакансий по городам (топ 20)
-city_share = df['area_name'].value_counts(normalize=True).head(20).reset_index()
-city_share.columns = ['area_name', 'share']
-
-plt.figure(figsize=(12, 8))
-plt.pie(city_share['share'], labels=city_share['area_name'], autopct='%1.1f%%')
-plt.title('Доля вакансий по городам (Топ 20)')
-plt.savefig(os.path.join(output_folder, 'vacancies_share_by_city.png'))
-plt.close()
-
-# 5. ТОП-20 навыков по годам
-all_skills = defaultdict(int)
-for skills in df['skills']:
-    for skill in skills:
-        all_skills[skill] += 1
-
-top_skills = pd.DataFrame.from_dict(all_skills, orient='index', columns=['count']).sort_values('count',
-                                                                                               ascending=False).head(20)
-
-plt.figure(figsize=(12, 8))
-plt.barh(top_skills.index, top_skills['count'])
-plt.title('ТОП-20 навыков')
-plt.xlabel('Количество упоминаний')
-plt.ylabel('Навык')
-plt.gca().invert_yaxis()
-plt.grid(True)
-plt.savefig(os.path.join(output_folder, 'top_skills.png'))
-plt.close()
-
-# Сохранение таблиц в CSV
-salary_by_year.to_csv(os.path.join(output_folder, 'salary_by_year.csv'), index=False)
-vacancies_by_year.to_csv(os.path.join(output_folder, 'vacancies_by_year.csv'), index=False)
-city_salary.to_csv(os.path.join(output_folder, 'salary_by_city.csv'), index=False)
-city_share.to_csv(os.path.join(output_folder, 'vacancies_share_by_city.csv'), index=False)
-top_skills.to_csv(os.path.join(output_folder, 'top_skills.csv'), index=True)
-
-print(f'Графики и таблицы сохранены в папку: {os.path.abspath(output_folder)}')
+process_data('data/vacancies_2024.csv')
