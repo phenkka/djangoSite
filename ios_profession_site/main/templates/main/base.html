@@ -2,34 +2,67 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>iOS Insight</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <meta charset="UTF-8">
+  <title>{% block title %}iOS-профессия{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>iOS Insight</h1>
-    </header>
+  <div class="sidebar">
+    <ul>
+      <li class="logo">
+        <a href="#">
+          <i class="fas fa-desktop"></i>
+            <span class="text"><strong>IOS РАЗРАБОТЧИК</strong></span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'home' %}">
+          <i class="fas fa-home"></i>
+          <span class="text">Главная</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'statistics' %}">
+          <i class="fas fa-chart-line"></i>
+          <span class="text">Общая статистика</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'demand' %}">
+          <i class="fas fa-fire"></i>
+          <span class="text">Востребованность</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'geo' %}">
+          <i class="fas fa-map-marker-alt"></i>
+          <span class="text">География</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'skills' %}">
+          <i class="fas fa-code"></i>
+          <span class="text">Навыки</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fas fa-briefcase"></i>
+          <span class="text">Последние вакансии</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 
-    <div class="container">
-        <nav class="sidebar">
-            <ul>
-                <li><a href="{% url 'home' %}">Главная</a></li>
-                <li><a href="{% url 'statistics' %}">Общая статистика</a></li>
-                <li><a href="{% url 'demand' %}">Востребованность</a></li>
-                <li><a href="{% url 'geo' %}">География</a></li>
-                <li><a href="{% url 'skills' %}">Навыки</a></li>
-                <li><a href="{% url 'latest_vacancies' %}">Последние вакансии</a></li>
-            </ul>
-        </nav>
-
-        <main>
-            {% block content %}{% endblock %}
-        </main>
+  <div class="main-content">
+    <div class="content-wrapper">
+      {% block content %}{% endblock %}
     </div>
 
-    <footer>
-        <p>Орлов Иван Николаевич | РИ-231003</p>
+    <footer class="site-footer">
+      Орлов Иван Николаевич | РИ-231003
     </footer>
+  </div>
 </body>
 </html>
