@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-
+from captcha.fields import CaptchaField
 
 
 class EmailLoginForm(forms.Form):
@@ -30,10 +30,11 @@ class EmailLoginForm(forms.Form):
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label="Пароль")
     password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите пароль")
+    captcha = CaptchaField()
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password2']
+        fields = ['username', 'email', 'password', 'password2', 'captcha']
 
     def clean(self):
         cleaned_data = super().clean()
