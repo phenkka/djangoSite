@@ -5,8 +5,9 @@ from captcha.fields import CaptchaField
 
 
 class EmailLoginForm(forms.Form):
-    email = forms.EmailField(label="Email")
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'placeholder': 'Почта', 'class': 'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Пароль', 'class': 'form-control'}))
+    captcha = CaptchaField()
 
     def clean(self):
         email = self.cleaned_data.get('email')
@@ -28,13 +29,17 @@ class EmailLoginForm(forms.Form):
         return self.cleaned_data
 
 class RegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, label="Пароль")
-    password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите пароль")
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Пароль'}), label="Пароль")
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Подтверждение пароля'}), label="Повторите пароль")
     captcha = CaptchaField()
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'password2', 'captcha']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Имя'}),
+            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Почта'}),
+        }
 
     def clean(self):
         cleaned_data = super().clean()

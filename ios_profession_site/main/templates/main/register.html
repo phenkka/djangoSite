@@ -1,17 +1,32 @@
 {% extends "main/base.html" %}
+{% load static %}
 
 {% block content %}
-<div class="login-container">
-    <h2>Регистрация</h2>
-    <form method="post">
+<head>
+    <link rel="stylesheet" href="{% static 'css/style_authorization.css' %}">
+</head>
+<div class="login-page">
+  <div class="login-form-container">
+    <div class="login-form">
+      <h2>Регистрация</h2>
+      <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.username }}
+        {{ form.email }}
+        {{ form.password }}
+        {{ form.password2 }}
+        {{ form.captcha }}
         <button type="submit">Зарегистрироваться</button>
-    </form>
-
-    <p class="register-link">
-        Уже есть аккаунт?
-        <a href="{% url 'login' %}">Войти</a>
-    </p>
+      </form>
+      <div class="register-link">
+        Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+      </div>
+    </div>
+  </div>
+  <div class="login-image-container">
+    <img src="{% static 'img/login.jpg' %}" alt="Login Image">
+  </div>
 </div>
+
+
 {% endblock %}

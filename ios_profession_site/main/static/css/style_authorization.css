@@ -1,0 +1,133 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.login-page {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.login-form-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 40px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.login-form {
+  width: 320px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"],
+.login-form input[type="text"] {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border: 1.5px solid #ccc;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.login-form input[type="email"]:focus,
+.login-form input[type="password"]:focus,
+.login-form input[type="text"]:focus {
+  border-color: #007bff;
+}
+
+.login-form button {
+  padding: 12px;
+  border: none;
+  background-color: #1a1a1a;
+  color: white;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #444444;
+}
+
+.login-form .register-link {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.login-form .register-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-form .register-link a:hover {
+  text-decoration: underline;
+}
+
+.login-image-container {
+  flex: 0 0 auto;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.login-image-container img {
+  height: 100%;
+  width: auto;
+  display: block;
+  border-radius: 0 12px 12px 0;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+  }
+  .login-image-container {
+    height: 200px;
+    width: 100%;
+    margin: 0;
+  }
+  .login-image-container img {
+    height: 100%;
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+  }
+  .login-form-container {
+    padding: 20px;
+    flex: none;
+  }
+  .login-form {
+    width: 100%;
+  }
+}
