@@ -1,17 +1,44 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
 {% block content %}
-  <h1>{{ stats.title }}</h1>
-  <p>{{ stats.description }}</p>
+<head>
+  <link rel="stylesheet" href="{% static 'css/style_statistics_demand_geo_skills.css' %}">
+</head>
+  <div class="page-header">
+    <h1>{{ stats.title }}</h1>
+    <p>{{ stats.description }}</p>
+  </div>
 
-  <img src="{{ stats.salary_dynamics.url }}" alt="График">
+  <div class="carousel-container">
+    <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>
+    <div class="carousel-wrapper" id="carouselWrapper">
 
-  <img src="{{ stats.vacancies_dynamics.url }}" alt="График">
+      <div class="carousel-slide">
+        <img src="{{ stats.salary_dynamics.url }}" alt="График">
+      </div>
 
-  <img src="{{ stats.salary_by_city.url }}" alt="График">
+      <div class="carousel-slide">
+        <img src="{{ stats.vacancies_dynamics.url }}" alt="График">
+      </div>
 
-  <img src="{{ stats.vacancies_share_by_city.url }}" alt="График">
+      <div class="carousel-slide">
+        <img src="{{ stats.salary_by_city.url }}" alt="График">
+      </div>
 
-  <img src="{{ stats.top_skills.url }}" alt="График">
+      <div class="carousel-slide">
+        <img src="{{ stats.vacancies_share_by_city.url }}" alt="График">
+      </div>
 
+      <div class="carousel-slide">
+        <img src="{{ stats.top_skills.url }}" alt="График">
+      </div>
+
+    </div>
+    <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>
+  </div>
+
+  {% block scripts %}
+    <script src="{% static 'js/carousel.js' %}"></script>
+  {% endblock %}
 {% endblock %}
