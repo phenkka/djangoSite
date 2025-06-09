@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+data
+
+
+.env
+.venv/
+venv/
+ENV/
+env/
+
+.idea/
+
+# Docker
+*.pid
+*.tar
+*.log
+docker-compose.override.yml
