@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.models import User
 from captcha.fields import CaptchaField
 
@@ -40,6 +40,13 @@ class RegisterForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Имя'}),
             'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Почта'}),
         }
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        User = get_user_model()
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Пользователь с такой почтой уже зарегистрирован.")
+        return email
 
     def clean(self):
         cleaned_data = super().clean()

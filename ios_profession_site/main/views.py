@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from .models import GeneralStatistics, MainPageInfo, DemandStatistics, GeoStatistics, SkillsStatistics
 from .forms import EmailLoginForm, RegisterForm
 
@@ -28,9 +28,6 @@ def latest_vacancies(request):
     return render(request, 'main/latest.html')
 
 def register(request):
-    return render(request, 'main/register.html')
-
-def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -43,8 +40,6 @@ def register(request):
         form = RegisterForm()
     return render(request, 'main/register.html', {'form': form})
 
-def login(request):
-    return render(request, 'main/login.html')
 
 def custom_login_view(request):
     if request.method == 'POST':
@@ -55,3 +50,7 @@ def custom_login_view(request):
     else:
         form = EmailLoginForm()
     return render(request, 'main/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
