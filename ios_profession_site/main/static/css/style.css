@@ -38,11 +38,19 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .sidebar ul li {
   display: flex;
   align-items: center;
+}
+
+.sidebar ul li.auth-item {
+  margin-top: auto;
+  padding-bottom: 10px;
 }
 
 .sidebar ul li a {
@@ -52,6 +60,8 @@ body {
   color: white;
   padding: 15px;
   transition: background 0.3s;
+  width: 220px;
+  box-sizing: border-box;
 }
 
 .sidebar ul li a:hover {

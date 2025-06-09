@@ -52,13 +52,13 @@
           <span class="text">Последние вакансии</span>
         </a>
       </li>
-      <li>
+      <li class="auth-item">
         {% if user.is_authenticated %}
           <a href="#">
             <i class="fas fa-user"></i>
             <span class="text">{{ user.username }}</span>
-            <a href="{% url 'logout' %}">Выйти</a>
           </a>
+          <a href="{% url 'logout' %}">Выйти</a>
         {% else %}
           <a href="{% url 'login' %}">
             <i class="fas fa-user"></i>
