@@ -43,6 +43,12 @@ class GeneralStatistics(models.Model):
     vacancies_share_by_city = models.ImageField(upload_to='charts/', verbose_name="Доля вакансий по городам", blank=True, null=True)
     top_skills = models.ImageField(upload_to='charts/', verbose_name="ТОП-20 навыков по годам", blank=True, null=True)
 
+    salary_dynamics_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Динамика зарплат", blank=True, null=True)
+    vacancies_dynamics_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Динамика вакансий", blank=True, null=True)
+    salary_by_city_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Зарплаты по городам", blank=True, null=True)
+    vacancies_share_by_city_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Доля вакансий по городам", blank=True, null=True)
+    top_skills_csv = models.FileField(upload_to='csv/', verbose_name="CSV: ТОП-20 навыков", blank=True, null=True)
+
     def __str__(self):
         return self.title
 
@@ -94,3 +100,15 @@ class SkillsStatistics(models.Model):
     class Meta:
         verbose_name = "Навыки"
         verbose_name_plural = "Навыки"
+
+class HHStatistics(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=310)
+    skills_str = models.CharField()
+    company = models.CharField()
+    salary = models.CharField()
+    area = models.CharField()
+    published_at = models.DateField()
+
+    def __str__(self):
+        return self.name
