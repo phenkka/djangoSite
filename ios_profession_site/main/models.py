@@ -115,7 +115,7 @@ class HHStatistics(models.Model):
     company = models.CharField()
     salary = models.CharField()
     area = models.CharField()
-    published_at = models.DateField()
+    published_at = models.DateTimeField()
 
     def __str__(self):
         return self.name

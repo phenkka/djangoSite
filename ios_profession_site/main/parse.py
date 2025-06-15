@@ -3,13 +3,20 @@ import requests
 import time
 import re
 import django
+import sys
 
 from datetime import datetime, timedelta, timezone
 
+# Добавляем в sys.path корень проекта (если ты внутри /app/main)
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+# Указываем Django settings
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ios_profession_site.settings')
+
+# Инициализируем Django
 django.setup()
 
-from models import HHStatistics
+from main.models import HHStatistics
 
 
 def get_vacancies(per_page=50):

@@ -1,6 +1,6 @@
 import os
 
-from .models import GeneralStatistics, MainPageInfo, DemandStatistics, GeoStatistics, SkillsStatistics
+from .models import GeneralStatistics, MainPageInfo, DemandStatistics, GeoStatistics, SkillsStatistics, HHStatistics
 from .forms import EmailLoginForm, RegisterForm
 
 from django.conf import settings
@@ -47,7 +47,8 @@ def skills(request):
     return render(request, 'main/skills.html', {'stats': stats})
 
 def latest_vacancies(request):
-    return render(request, 'main/latest.html')
+    vacancies = HHStatistics.objects.order_by('-published_at')[:20]
+    return render(request, 'main/latest_vacancies.html', {'vacancies': vacancies})
 
 def register(request):
     email_sent = False

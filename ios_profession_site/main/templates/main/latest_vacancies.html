@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<head>
+  <link rel="stylesheet" href="{% static 'css/style_statistics_demand_geo_skills.css' %}">
+</head>
+  <div class="page-header">
+    <h1>Последние вакансии iOS-разработчиков</h1>
+  </div>
+
+  <div class="carousel-container">
+<!--    <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>-->
+    <div class="carousel-wrapper" id="carouselWrapper">
+      {% for vacancy in vacancies %}
+        <div class="vacancy-card">
+          <h2>{{ vacancy.name }}</h2>
+          <p><strong>Компания:</strong> {{ vacancy.company }}</p>
+          <p><strong>Регион:</strong> {{ vacancy.area }}</p>
+          <p><strong>Оклад:</strong> {{ vacancy.salary }}</p>
+          <p><strong>Навыки:</strong> {{ vacancy.skills }}</p>
+          <p><strong>Опубликовано:</strong> {{ vacancy.published_at|date:"H:i d.m.Y" }}</p>
+          <details>
+            <summary>Описание</summary>
+            <p>{{ vacancy.description|linebreaksbr }}</p>
+          </details>
+        </div>
+      {% empty %}
+        <p>Нет доступных вакансий.</p>
+      {% endfor %}
+    </div>
+<!--    <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>-->
+  </div>
+
+{% endblock %}
