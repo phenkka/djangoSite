@@ -64,6 +64,9 @@ class DemandStatistics(models.Model):
     ios_salary_level_trend = models.ImageField(upload_to='charts/', verbose_name="Динамика уровня зарплат по годам для выбранной профессии")
     ios_vacancies_level_trend = models.ImageField(upload_to='charts/', verbose_name="Динамика количества вакансий по годам для выбранной профессии")
 
+    ios_salary_level_trend_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Динамика уровня зарплат по годам для выбранной профессии", blank=True, null=True)
+    ios_vacancies_level_trend_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Динамика количества вакансий по годам для выбранной профессии", blank=True, null=True)
+
     def __str__(self):
         return self.title
 
@@ -79,6 +82,9 @@ class GeoStatistics(models.Model):
     geo_ios_city_salary = models.ImageField(upload_to='charts/', verbose_name="Уровень зарплат по городам для выбранной профессии")
     geo_ios_city_vacancy_share = models.ImageField(upload_to='charts/', verbose_name="Доля вакансий по городам для выбранной профессии")
 
+    geo_ios_city_salary_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Уровень зарплат по городам для выбранной профессии", blank=True, null=True)
+    geo_ios_city_vacancy_share_csv = models.FileField(upload_to='csv/', verbose_name="CSV: Доля вакансий по городам для выбранной профессии", blank=True, null=True)
+
     def __str__(self):
         return self.title
 
@@ -93,6 +99,7 @@ class SkillsStatistics(models.Model):
     description = models.TextField(blank=True)
 
     skills_top_ios_trend = models.ImageField(upload_to='charts/', verbose_name="ТОП-20 навыков по годам для выбранной профессии")
+    skills_top_ios_trend_csv = models.FileField(upload_to='csv/', verbose_name="CSV: ТОП-20 навыков по годам для выбранной профессии", blank=True, null=True)
 
     def __str__(self):
         return self.title
