@@ -15,4 +15,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('activate/<uidb64>/<token>/', activate, name='activate'),
+    path('download-csv/<str:filename>/', views.download_csv, name='download_csv'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

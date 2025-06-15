@@ -15,32 +15,38 @@
     <div class="carousel-wrapper" id="carouselWrapper">
 
       <div class="carousel-slide">
-        <a href="{{ stats.salary_dynamics_csv.url }}" download>
+        <a href="{% url 'download_csv' stats.salary_dynamics_csv.name|cut:'csv/' %}">
           <img src="{{ stats.salary_dynamics.url }}" alt="График">
         </a>
       </div>
 
       <div class="carousel-slide">
-        <a href="{{ stats.vacancies_dynamics_csv.url }}" download>
-          <img src="{{ stats.vacancies_dynamics.url }}" alt="График">
+        <a href="{% url 'download_csv' stats.salary_dynamics_csv.name|cut:'csv/' %}">
+          <img src="{{ stats.salary_dynamics.url }}" alt="График: Динамика уровня зарплат">
         </a>
       </div>
 
       <div class="carousel-slide">
-        <a href="{{ stats.salary_by_city_csv.url }}" download>
-          <img src="{{ stats.salary_by_city.url }}" alt="График">
+        <a href="{% url 'download_csv' stats.vacancies_dynamics_csv.name|cut:'csv/' %}">
+          <img src="{{ stats.vacancies_dynamics.url }}" alt="График: Динамика количества вакансий">
         </a>
       </div>
 
       <div class="carousel-slide">
-        <a href="{{ stats.vacancies_share_by_city_csv.url }}" download>
-          <img src="{{ stats.vacancies_share_by_city.url }}" alt="График">
+        <a href="{% url 'download_csv' stats.salary_by_city_csv.name|cut:'csv/' %}">
+          <img src="{{ stats.salary_by_city.url }}" alt="График: Уровень зарплат по городам">
         </a>
       </div>
 
       <div class="carousel-slide">
-        <a href="{{ stats.top_skills_csv.url }}" download>
-          <img src="{{ stats.top_skills.url }}" alt="График">
+        <a href="{% url 'download_csv' stats.vacancies_share_by_city_csv.name|cut:'csv/' %}">
+          <img src="{{ stats.vacancies_share_by_city.url }}" alt="График: Доля вакансий по городам">
+        </a>
+      </div>
+
+      <div class="carousel-slide">
+        <a href="{% url 'download_csv' stats.top_skills_csv.name|cut:'csv/' %}">
+          <img src="{{ stats.top_skills.url }}" alt="График: ТОП-20 навыков">
         </a>
       </div>
 

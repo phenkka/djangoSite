@@ -15,13 +15,13 @@
     <div class="carousel-wrapper" id="carouselWrapper">
 
       <div class="carousel-slide">
-        <a href="{{ stats.ios_salary_level_trend_csv.url }}">
+        <a href="{% url 'download_csv' stats.ios_salary_level_trend_csv.name|cut:'csv/' %}" title="Скачать CSV">
           <img src="{{ stats.ios_salary_level_trend.url }}" alt="График динамики зарплат">
         </a>
       </div>
 
       <div class="carousel-slide">
-        <a href="{{ stats.ios_vacancies_level_trend_csv.url }}">
+        <a href="{% url 'download_csv' stats.ios_vacancies_level_trend_csv.name|cut:'csv/' %}" title="Скачать CSV">
           <img src="{{ stats.ios_vacancies_level_trend.url }}" alt="График динамики вакансий">
         </a>
       </div>

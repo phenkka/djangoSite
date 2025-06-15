@@ -15,13 +15,13 @@
     <div class="carousel-wrapper" id="carouselWrapper">
 
       <div class="carousel-slide">
-        <a href="{{ stats.geo_ios_city_salary_csv.url }}">
+        <a href="{% url 'download_csv' stats.geo_ios_city_salary_csv.name|cut:'csv/' %}" title="Скачать CSV">
           <img src="{{ stats.geo_ios_city_salary.url }}" alt="График динамики зарплат">
         </a>
       </div>
 
       <div class="carousel-slide">
-        <a href="{{ stats.geo_ios_city_vacancy_share_csv.ur }}">
+        <a href="{% url 'download_csv' stats.geo_ios_city_vacancy_share_csv.name|cut:'csv/' %}" title="Скачать CSV">
           <img src="{{ stats.geo_ios_city_vacancy_share.url }}" alt="График динамики вакансий">
         </a>
       </div>

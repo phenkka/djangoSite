@@ -15,7 +15,7 @@
     <div class="carousel-wrapper" id="carouselWrapper">
 
       <div class="carousel-slide">
-        <a href="{{ stats.skills_top_ios_trend_csv.url }}">
+        <a href="{% url 'download_csv' stats.skills_top_ios_trend_csv.name|cut:'csv/' %}" title="Скачать CSV">
           <img src="{{ stats.skills_top_ios_trend.url }}" alt="График динамики зарплат">
         </a>
       </div>
