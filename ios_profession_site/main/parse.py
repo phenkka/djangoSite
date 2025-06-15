@@ -114,7 +114,7 @@ def main():
             print(f"   Дата публикации: {published_at_dt}\n")
 
         print(timestamps)
-        time.sleep(10)
+        time.sleep(min(timestamps))
 
 if __name__ == "__main__":
     main()
