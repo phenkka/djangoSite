@@ -21,6 +21,46 @@
   line-height: 1.6;
 }
 
+.vacancy-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+.vacancy-card {
+  width: 80%;
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  transition: transform 0.2s ease;
+}
+
+.vacancy-card:hover {
+  transform: translateY(-3px);
+}
+
+.vacancy-card h2 {
+  margin-bottom: 12px;
+  font-size: 28px;
+  color: #1a1a1a;
+}
+
+.vacancy-card p {
+  font-size: 16px;
+  margin: 6px 0;
+  color: #333;
+}
+
+.vacancy-card details summary {
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 .carousel-container {
   max-width: 70%;
   margin: 60px auto 0;

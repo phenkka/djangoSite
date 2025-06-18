@@ -73,6 +73,8 @@ def main():
     vacancies_raw = get_vacancies()
 
     while True:
+        HHStatistics.objects.all().delete()
+
         timestamps = []
         ios_vacancies = []
 
@@ -92,6 +94,7 @@ def main():
             area = details.get("area", {}).get("name", "Не указан регион")
             published_at = details.get("published_at", "Не указана дата")
             published_at_dt = datetime.fromisoformat(published_at.replace('Z', '+00:00'))
+            vacancy_url = details.get("alternate_url", "")
             timestamps.append(time_until_older_than_24h(published_at))
 
             if not HHStatistics.objects.filter(name=name, company=company, published_at=published_at_dt).exists():
@@ -103,6 +106,7 @@ def main():
                     salary=salary,
                     area=area,
                     published_at=published_at_dt,
+                    url=vacancy_url,
                 )
 
             print(f"{idx}. Название вакансии: {name}")
@@ -114,7 +118,7 @@ def main():
             print(f"   Дата публикации: {published_at_dt}\n")
 
         print(timestamps)
-        time.sleep(10)
+        time.sleep(min(timestamps))
 
 if __name__ == "__main__":
     main()

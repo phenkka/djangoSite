@@ -37,6 +37,13 @@ class MainPageInfo(models.Model):
 class GeneralStatistics(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     description = models.TextField(verbose_name="Описание (опционально)", blank=True)
+    under_1 = models.CharField(blank=True, null=True)
+    under_2 = models.CharField(blank=True, null=True)
+    under_3 = models.CharField(blank=True, null=True)
+    under_4 = models.CharField(blank=True, null=True)
+    under_5 = models.CharField(blank=True, null=True)
+    ending = models.TextField(verbose_name="Описание (опционально)", blank=True, null=True)
+
     salary_dynamics = models.ImageField(upload_to='charts/', verbose_name="Динамика уровня зарплат по годам", blank=True, null=True)
     vacancies_dynamics = models.ImageField(upload_to='charts/', verbose_name="Динамика количества вакансий по годам", blank=True, null=True)
     salary_by_city = models.ImageField(upload_to='charts/', verbose_name="Уровень зарплат по городам", blank=True, null=True)
@@ -60,6 +67,9 @@ class GeneralStatistics(models.Model):
 class DemandStatistics(models.Model):
     title = models.CharField(max_length=200, default='Востребованность iOS-разработчика')
     description = models.TextField(blank=True)
+    under_1 = models.CharField(blank=True, null=True)
+    under_2 = models.CharField(blank=True, null=True)
+    ending = models.TextField(verbose_name="Описание (опционально)", blank=True, null=True)
 
     ios_salary_level_trend = models.ImageField(upload_to='charts/', verbose_name="Динамика уровня зарплат по годам для выбранной профессии")
     ios_vacancies_level_trend = models.ImageField(upload_to='charts/', verbose_name="Динамика количества вакансий по годам для выбранной профессии")
@@ -78,6 +88,9 @@ class DemandStatistics(models.Model):
 class GeoStatistics(models.Model):
     title = models.CharField(max_length=200, default='География iOS-разработчика')
     description = models.TextField(blank=True)
+    under_1 = models.CharField(blank=True, null=True)
+    under_2 = models.CharField(blank=True, null=True)
+    ending = models.TextField(verbose_name="Описание (опционально)", blank=True, null=True)
 
     geo_ios_city_salary = models.ImageField(upload_to='charts/', verbose_name="Уровень зарплат по городам для выбранной профессии")
     geo_ios_city_vacancy_share = models.ImageField(upload_to='charts/', verbose_name="Доля вакансий по городам для выбранной профессии")
@@ -97,6 +110,8 @@ class GeoStatistics(models.Model):
 class SkillsStatistics(models.Model):
     title = models.CharField(max_length=200, default='ТОП-20 навыков для iOS-разработчика')
     description = models.TextField(blank=True)
+    under_1 = models.CharField(blank=True, null=True)
+    ending = models.TextField(verbose_name="Описание (опционально)", blank=True, null=True)
 
     skills_top_ios_trend = models.ImageField(upload_to='charts/', verbose_name="ТОП-20 навыков по годам для выбранной профессии")
     skills_top_ios_trend_csv = models.FileField(upload_to='csv/', verbose_name="CSV: ТОП-20 навыков по годам для выбранной профессии", blank=True, null=True)
@@ -116,6 +131,7 @@ class HHStatistics(models.Model):
     salary = models.CharField()
     area = models.CharField()
     published_at = models.DateTimeField()
+    url = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name

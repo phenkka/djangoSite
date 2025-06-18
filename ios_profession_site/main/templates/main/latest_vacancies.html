@@ -11,10 +11,14 @@
 
   <div class="carousel-container">
 <!--    <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>-->
-    <div class="carousel-wrapper" id="carouselWrapper">
+    <div class="vacancy-list">
       {% for vacancy in vacancies %}
         <div class="vacancy-card">
-          <h2>{{ vacancy.name }}</h2>
+          <h2>
+            <a href="{{ vacancy.url }}" target="_blank" rel="noopener noreferrer">
+              {{ vacancy.name }}
+            </a>
+          </h2>
           <p><strong>Компания:</strong> {{ vacancy.company }}</p>
           <p><strong>Регион:</strong> {{ vacancy.area }}</p>
           <p><strong>Оклад:</strong> {{ vacancy.salary }}</p>
@@ -29,6 +33,7 @@
         <p>Нет доступных вакансий.</p>
       {% endfor %}
     </div>
+
 <!--    <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>-->
   </div>
 
