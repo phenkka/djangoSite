@@ -18,13 +18,7 @@
 
   <div class="carousel-container">
     <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>
-    <div class="carousel-wrapper" id="carouselWrapper">
-
-      <div class="carousel-slide">
-        <a href="{% url 'download_csv' stats.salary_dynamics_csv.name|cut:'csv/' %}">
-          <img src="{{ stats.salary_dynamics.url }}" alt="График">
-        </a>
-      </div>
+    <div class="carousel-wrapper" id="carouselWrapperCharts">
 
       <div class="carousel-slide">
         <a href="{% url 'download_csv' stats.salary_dynamics_csv.name|cut:'csv/' %}">
@@ -59,6 +53,24 @@
     </div>
     <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>
   </div>
+
+  <div class="carousel-container">
+    <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>
+    <div class="carousel-wrapper" id="carouselWrapperTables">
+
+      {% for table in tables %}
+        <div class="carousel-slide">
+          <div class="table-section">
+            <h3>{{ table.title }}</h3>
+            {{ table.html|safe }}
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+    <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>
+  </div>
+
 
   {% block scripts %}
     <script src="{% static 'js/carousel.js' %}"></script>

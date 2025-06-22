@@ -1,4 +1,7 @@
 import os
+import csv
+
+from pandas.core.indexes.base import str_t
 
 from .models import GeneralStatistics, MainPageInfo, DemandStatistics, GeoStatistics, SkillsStatistics, HHStatistics
 from .forms import EmailLoginForm, RegisterForm
@@ -6,6 +9,8 @@ from .forms import EmailLoginForm, RegisterForm
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -25,6 +30,37 @@ def download_csv(request, filename):
     else:
         raise Http404("Файл не найден")
 
+def read_csv(file_field):
+    if file_field and file_field.path:
+        with open(file_field.path, encoding='utf-8') as f:
+            reader = csv.reader(f)
+            rows = list(reader)
+            if not rows:
+                return ''
+
+            max_rows = 10  # Максимум строк с данными (без заголовка)
+
+            html = '<table class="data-table">\n'
+            # Заголовок
+            html += '<thead><tr>' + ''.join(f'<th>{escape(col)}</th>' for col in rows[0]) + '</tr></thead>\n'
+            html += '<tbody>\n'
+
+            # Отображаем либо все строки, если их меньше max_rows, либо первые max_rows
+            data_rows = rows[1:]
+            if len(data_rows) > max_rows:
+                for row in data_rows[:max_rows]:
+                    html += '<tr>' + ''.join(f'<td>{escape(cell)}</td>' for cell in row) + '</tr>\n'
+                # Добавляем строку с многоточиями, по количеству колонок
+                html += '<tr>' + ''.join('<td>...</td>' for _ in rows[0]) + '</tr>\n'
+            else:
+                for row in data_rows:
+                    html += '<tr>' + ''.join(f'<td>{escape(cell)}</td>' for cell in row) + '</tr>\n'
+
+            html += '</tbody></table>'
+
+            return mark_safe(html)
+    return ''
+
 
 def home(request):
     info = MainPageInfo.objects.first()
@@ -32,19 +68,101 @@ def home(request):
 
 def statistics(request):
     stats = GeneralStatistics.objects.first()
-    return render(request, 'main/statistics.html', {'stats': stats})
+
+    salary_dynamics_table = read_csv(stats.salary_dynamics_csv)
+    vacancies_dynamics_table = read_csv(stats.vacancies_dynamics_csv)
+    salary_by_city_table = read_csv(stats.salary_by_city_csv)
+    vacancies_share_by_city_table = read_csv(stats.vacancies_share_by_city_csv)
+    top_skills_table = read_csv(stats.top_skills_csv)
+
+    context = {
+        'stats': stats,
+        'tables': [
+            {
+                'title': 'Динамика уровня зарплат по годам',
+                'html': salary_dynamics_table,
+            },
+            {
+                'title': 'Динамика количества вакансий по годам',
+                'html': vacancies_dynamics_table,
+            },
+            {
+                'title': 'Уровень зарплат по городам',
+                'html': salary_by_city_table,
+            },
+            {
+                'title': 'Доля вакансий по городам',
+                'html': vacancies_share_by_city_table,
+            },
+            {
+                'title': 'ТОП-20 навыков по годам',
+                'html': top_skills_table,
+            },
+        ]
+    }
+
+    return render(request, 'main/statistics.html', context)
 
 def demand(request):
     stats = DemandStatistics.objects.first()
-    return render(request, 'main/demand.html', {'stats': stats})
+
+    ios_salary_level_trend_table = read_csv(stats.ios_salary_level_trend_csv)
+    ios_vacancies_level_trend_table = read_csv(stats.ios_vacancies_level_trend_csv)
+
+    context = {
+        'stats': stats,
+        'tables': [
+            {
+                'title': 'Динамика уровня зарплат по годам для выбранной профессии',
+                'html': ios_salary_level_trend_table,
+            },
+            {
+                'title': 'Динамика количества вакансий по годам для выбранной профессии',
+                'html': ios_vacancies_level_trend_table,
+            },
+        ]
+    }
+
+    return render(request, 'main/demand.html', context)
 
 def geo(request):
     stats = GeoStatistics.objects.first()
-    return render(request, 'main/geo.html', {'stats': stats})
+
+    geo_ios_city_salary_table = read_csv(stats.geo_ios_city_salary_csv)
+    geo_ios_city_vacancy_share_table = read_csv(stats.geo_ios_city_vacancy_share_csv)
+
+    context = {
+        'stats': stats,
+        'tables': [
+            {
+                'title': 'Уровень зарплат по городам для выбранной профессии',
+                'html': geo_ios_city_salary_table,
+            },
+            {
+                'title': 'Доля вакансий по городам для выбранной профессии',
+                'html': geo_ios_city_vacancy_share_table,
+            },
+        ]
+    }
+
+    return render(request, 'main/geo.html', context)
 
 def skills(request):
     stats = SkillsStatistics.objects.first()
-    return render(request, 'main/skills.html', {'stats': stats})
+
+    skills_top_ios_trend_table = read_csv(stats.skills_top_ios_trend_csv)
+
+    context = {
+        'stats': stats,
+        'tables': [
+            {
+                'title': 'ТОП-20 навыков по годам для выбранной профессии',
+                'html': skills_top_ios_trend_table,
+            },
+        ]
+    }
+
+    return render(request, 'main/skills.html', context)
 
 def latest_vacancies(request):
     vacancies = HHStatistics.objects.order_by('-published_at')[:20]

@@ -1,22 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const wrapper = document.getElementById('carouselWrapper');
-  const slidesCount = wrapper.children.length;
-  let currentIndex = 0;
+  const carousels = document.querySelectorAll('.carousel-container');
 
-  const btnPrev = document.querySelector('.arrow-left');
-  const btnNext = document.querySelector('.arrow-right');
+  carousels.forEach((carousel) => {
+    const wrapper = carousel.querySelector('.carousel-wrapper');
+    const slides = wrapper.children;
+    const slidesCount = slides.length;
+    let currentIndex = 0;
 
-  function updateCarousel() {
-    wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
-  }
+    const btnPrev = carousel.querySelector('.arrow-left');
+    const btnNext = carousel.querySelector('.arrow-right');
 
-  btnPrev.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + slidesCount) % slidesCount;
-    updateCarousel();
-  });
+    function updateCarousel() {
+      wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
 
-  btnNext.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % slidesCount;
+    btnPrev.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + slidesCount) % slidesCount;
+      updateCarousel();
+    });
+
+    btnNext.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % slidesCount;
+      updateCarousel();
+    });
+
+    // Обнуляем scroll и задаём нужный CSS переход
+    wrapper.style.transition = 'transform 0.5s ease';
     updateCarousel();
   });
 });

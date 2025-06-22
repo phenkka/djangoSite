@@ -12,13 +12,30 @@
 
   <div class="carousel-container">
 <!--    <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>-->
-    <div class="carousel-wrapper" id="carouselWrapper">
+    <div class="carousel-wrapper" id="carouselWrapperCharts">
 
       <div class="carousel-slide">
         <a href="{% url 'download_csv' stats.skills_top_ios_trend_csv.name|cut:'csv/' %}" title="Скачать CSV">
           <img src="{{ stats.skills_top_ios_trend.url }}" alt="График динамики зарплат">
         </a>
       </div>
+
+    </div>
+<!--    <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>-->
+  </div>
+
+  <div class="carousel-container">
+<!--    <button class="carousel-arrow arrow-left" aria-label="Previous">&#10094;</button>-->
+    <div class="carousel-wrapper" id="carouselWrapperTables">
+
+      {% for table in tables %}
+        <div class="carousel-slide">
+          <div class="table-section">
+            <h3>{{ table.title }}</h3>
+            {{ table.html|safe }}
+          </div>
+        </div>
+      {% endfor %}
 
     </div>
 <!--    <button class="carousel-arrow arrow-right" aria-label="Next">&#10095;</button>-->
