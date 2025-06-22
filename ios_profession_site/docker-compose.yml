@@ -42,6 +42,5 @@ services:
     networks:
       - dev
 
-
 volumes:
   postgres_data:
